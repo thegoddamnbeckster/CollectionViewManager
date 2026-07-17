@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.collectionview"
        name="Collection View Manager"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Claude.ai with assistance from Michael Beck">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -10,7 +10,7 @@
         <menu id="kodi.core.main">
             <item library="context.py">
                 <label>32010</label>
-                <visible>String.StartsWith(Container.FolderPath,videodb://movies/sets/)</visible>
+                <visible>String.IsEqual(ListItem.DBTYPE,set)</visible>
             </item>
         </menu>
     </extension>

@@ -55,24 +55,29 @@ def get_current_skin():
     return xbmc.getSkinDir()
 
 
-def capture_current_view():
+def read_view_state(path, skin):
     """
-    Read back Kodi's own record of the view currently active for the
-    container the user is standing in (expected to be inside a movie
-    collection when this is called from the context menu item).
+    Read back Kodi's own record of the view saved for an arbitrary
+    window=10025 path, for the given skin.
+
+    The context menu item fires on the collection *tile* (a "set" ListItem),
+    which can be right-clicked from the Movies root without ever entering
+    the collection — so this looks up the state by the collection's own
+    constructed path (built from its DBID) rather than by whatever the
+    current container happens to be, which would be the root Movies list at
+    that point, not the collection.
 
     Returns a dict of captured values, or None if Kodi never wrote a row for
     this exact path — which means the user hasn't explicitly changed the
-    view here yet (Kodi only persists a row on an explicit view change, not
-    for a skin's built-in default).
+    view for this specific collection yet (Kodi only persists a row on an
+    explicit view change, not for a skin's built-in default). The user still
+    needs to enter that one collection once, via Kodi's own Options > View,
+    to establish a row — this function just avoids requiring that every
+    time, or requiring this addon's own menu to work from inside there.
     """
-    folder_path = xbmc.getInfoLabel("Container.FolderPath")
-    view_name = xbmc.getInfoLabel("Container.Viewmode")
-    skin = get_current_skin()
-
     db_path = _find_view_db_path()
     if not db_path:
-        log("capture_current_view: no ViewModes*.db found", xbmc.LOGERROR)
+        log("read_view_state: no ViewModes*.db found", xbmc.LOGERROR)
         return None
 
     con = _connect(db_path)
@@ -81,15 +86,15 @@ def capture_current_view():
         cur.execute(
             "SELECT viewMode, sortMethod, sortOrder, sortAttributes "
             "FROM view WHERE window=? AND path=? AND skin=?",
-            (WINDOW_VIDEO_NAV, folder_path, skin)
+            (WINDOW_VIDEO_NAV, path, skin)
         )
         row = cur.fetchone()
     finally:
         con.close()
 
     if row is None:
-        log("capture_current_view: no saved view state for path=%s, skin=%s "
-            "(open Options > View here and pick a view first)" % (folder_path, skin),
+        log("read_view_state: no saved view state for path=%s, skin=%s "
+            "(open that collection once and pick a view via Options > View first)" % (path, skin),
             xbmc.LOGWARNING)
         return None
 
@@ -99,8 +104,6 @@ def capture_current_view():
         "sort_order": row[2],
         "sort_attributes": row[3],
         "skin": skin,
-        "view_name": view_name or "",
-        "source_path": folder_path,
     }
 
 
