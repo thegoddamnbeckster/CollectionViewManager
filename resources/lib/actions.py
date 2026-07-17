@@ -1,67 +1,82 @@
 # -*- coding: utf-8 -*-
 """
-Core orchestration for the "pick a view, apply it everywhere" flow.
-
-Kodi's own internal view-mode encoding (what actually gets written to
-ViewModesN.db) isn't the raw skin view ID and isn't safe to fabricate — so
-rather than guess it, this briefly navigates to one real collection and
-fires Kodi's own Container.SetViewMode(id) builtin (the same thing Options >
-View triggers internally), lets Kodi compute and write the correct value
-itself, then copies that resulting row to every other movie collection.
+Shared capture/apply orchestration used by both the context menu (context.py)
+and the settings "Apply" action (default.py), so the two entry points can't
+drift out of sync with each other.
 """
 import xbmc
 import xbmcgui
 
-from resources.lib.utils import log, get_str
+from resources.lib.utils import log, get_str, get_setting, set_setting
 from resources.lib.viewdb import read_view_state, apply_view_to_all_collections, get_current_skin
 
-NAV_WAIT_SETTLE_SEC = 0.3
-READBACK_RETRIES = 3
 
-
-def set_view_for_all_collections(view_id, seed_set_id):
+def capture_from_current_listitem():
     """
-    Set `view_id` (a raw skin view ID, e.g. 54 for Estuary's InfoWall) on
-    the collection identified by `seed_set_id`, then copy the resulting
-    saved view state to every movie collection in the library.
+    Capture the view state for the collection ListItem the context menu was
+    triggered on and save it as this addon's captured default.
 
-    Returns (applied_count, total_count) on success. Raises RuntimeError
-    with a user-facing message on failure.
+    Returns the collection's title on success (a confirmation notification
+    is NOT shown here — the caller decides what to do next, e.g. offer to
+    apply immediately), or None on failure (a notification IS shown, since
+    there's nothing further for the caller to do).
     """
+    set_id = xbmc.getInfoLabel("ListItem.DBID")
+    set_title = xbmc.getInfoLabel("ListItem.Title") or xbmc.getInfoLabel("ListItem.Label")
     skin = get_current_skin()
-    seed_path = "videodb://movies/sets/%s/?setid=%s" % (seed_set_id, seed_set_id)
 
-    xbmc.executebuiltin("ActivateWindow(Videos,%s,return)" % seed_path, True)
-    xbmc.executebuiltin("Container.SetViewMode(%d)" % view_id, True)
+    if not set_id:
+        log("No ListItem.DBID available — cannot identify the collection", xbmc.LOGERROR)
+        xbmcgui.Dialog().notification(get_str(32000), get_str(32015), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return None
 
-    state = None
-    for attempt in range(READBACK_RETRIES):
-        xbmc.sleep(int(NAV_WAIT_SETTLE_SEC * 1000))
-        state = read_view_state(seed_path, skin)
-        if state is not None:
-            break
-        log("set_view_for_all_collections: readback attempt %d found nothing yet" % (attempt + 1))
-
-    # Always try to return the user to where they were, even on failure.
-    xbmc.executebuiltin("Action(Back)")
+    path = "videodb://movies/sets/%s/?setid=%s" % (set_id, set_id)
+    state = read_view_state(path, skin)
 
     if state is None:
-        raise RuntimeError("Kodi never saved a view state for the seed collection after SetViewMode")
+        xbmcgui.Dialog().notification(get_str(32000), get_str(32015), xbmcgui.NOTIFICATION_ERROR, 5000)
+        return None
 
-    applied, total = apply_view_to_all_collections(state)
-    return applied, total
+    set_setting("captured_view_mode", state["view_mode"])
+    set_setting("captured_sort_method", state["sort_method"])
+    set_setting("captured_sort_order", state["sort_order"])
+    set_setting("captured_sort_attributes", state["sort_attributes"])
+    set_setting("captured_skin", state["skin"])
+    set_setting("captured_view_name", set_title)
+    set_setting("captured_source_path", path)
+
+    log("Captured view from '%s' (setid=%s, mode=%s)" % (set_title, set_id, state["view_mode"]))
+    return set_title
 
 
-def run_set_view_flow(view_id, view_name, seed_set_id, seed_title):
+def apply_captured_to_all():
     """
-    Full user-facing flow for one context-menu invocation: set the view,
-    apply it everywhere, and show the result as a notification. Never
-    raises — all failures are reported via notification instead.
+    Apply the currently-captured view state to every movie collection.
+    Always shows a notification with the outcome.
     """
+    view_mode = get_setting("captured_view_mode")
+    if not view_mode:
+        xbmcgui.Dialog().notification(get_str(32000), get_str(32014), xbmcgui.NOTIFICATION_WARNING, 5000)
+        return
+
+    captured_skin = get_setting("captured_skin")
+    if captured_skin and captured_skin != get_current_skin():
+        xbmcgui.Dialog().notification(get_str(32000), get_str(32017), xbmcgui.NOTIFICATION_WARNING, 6000)
+        return
+
+    captured = {
+        "view_mode": int(view_mode),
+        "sort_method": int(get_setting("captured_sort_method") or 0),
+        "sort_order": int(get_setting("captured_sort_order") or 1),
+        "sort_attributes": int(get_setting("captured_sort_attributes") or 0),
+        "skin": captured_skin,
+    }
+    view_name = get_setting("captured_view_name") or "current"
+
     try:
-        applied, total = set_view_for_all_collections(view_id, seed_set_id)
+        applied, total = apply_view_to_all_collections(captured)
     except Exception as e:
-        log("run_set_view_flow failed: %s" % str(e), xbmc.LOGERROR)
+        log("Apply failed: %s" % str(e), xbmc.LOGERROR)
         xbmcgui.Dialog().notification(get_str(32000), get_str(32016), xbmcgui.NOTIFICATION_ERROR, 5000)
         return
 
@@ -69,8 +84,7 @@ def run_set_view_flow(view_id, view_name, seed_set_id, seed_title):
         xbmcgui.Dialog().notification(get_str(32000), get_str(32018), xbmcgui.NOTIFICATION_INFO, 4000)
         return
 
-    log("Applied '%s' (id=%d) to %d/%d collections, seeded from '%s'" % (
-        view_name, view_id, applied, total, seed_title))
+    log("Applied '%s' to %d/%d collections" % (view_name, applied, total))
     xbmcgui.Dialog().notification(
         get_str(32000), get_str(32013).format(view_name, applied, total), xbmcgui.NOTIFICATION_INFO, 5000
     )
