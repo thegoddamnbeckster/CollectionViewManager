@@ -56,3 +56,7 @@ msgstr "Apply to all movie collections now"
 msgctxt "#32023"
 msgid "How to set the default: open one collection, pick a view via Options > View, then right-click that same collection's tile (from the Movies list) and choose 'Set as default collection view'. Come back here and click Apply."
 msgstr "How to set the default: open one collection, pick a view via Options > View, then right-click that same collection's tile (from the Movies list) and choose 'Set as default collection view'. Come back here and click Apply."
+
+msgctxt "#32024"
+msgid "Captured the view from '{0}'. Apply it to every movie collection now?"
+msgstr "Captured the view from '{0}'. Apply it to every movie collection now?"
