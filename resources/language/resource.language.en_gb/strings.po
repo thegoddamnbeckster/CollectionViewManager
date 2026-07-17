@@ -1,0 +1,58 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: Collection View Manager\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+
+msgctxt "#32000"
+msgid "Collection View Manager"
+msgstr "Collection View Manager"
+
+msgctxt "#32010"
+msgid "Set as default collection view"
+msgstr "Set as default collection view"
+
+msgctxt "#32011"
+msgid "Captured '{0}' view — click 'Apply to all collections' in settings to use it everywhere"
+msgstr "Captured '{0}' view — click 'Apply to all collections' in settings to use it everywhere"
+
+msgctxt "#32013"
+msgid "Applied '{0}' view to {1} of {2} movie collections"
+msgstr "Applied '{0}' view to {1} of {2} movie collections"
+
+msgctxt "#32014"
+msgid "Nothing captured yet — open a collection's context menu and choose 'Set as default collection view' first"
+msgstr "Nothing captured yet — open a collection's context menu and choose 'Set as default collection view' first"
+
+msgctxt "#32015"
+msgid "Couldn't capture — open Options > View here and pick a view first, then try again"
+msgstr "Couldn't capture — open Options > View here and pick a view first, then try again"
+
+msgctxt "#32016"
+msgid "Apply failed — could not access Kodi's view database"
+msgstr "Apply failed — could not access Kodi's view database"
+
+msgctxt "#32017"
+msgid "Captured view was for a different skin than the one active now — recapture it"
+msgstr "Captured view was for a different skin than the one active now — recapture it"
+
+msgctxt "#32018"
+msgid "No movie collections found in your library"
+msgstr "No movie collections found in your library"
+
+msgctxt "#32020"
+msgid "Captured view"
+msgstr "Captured view"
+
+msgctxt "#32021"
+msgid "Captured from"
+msgstr "Captured from"
+
+msgctxt "#32022"
+msgid "Apply to all movie collections now"
+msgstr "Apply to all movie collections now"
+
+msgctxt "#32023"
+msgid "How to set the default: browse into any movie collection, open its context menu, choose 'Set as default collection view', then come back here and click Apply."
+msgstr "How to set the default: browse into any movie collection, open its context menu, choose 'Set as default collection view', then come back here and click Apply."
