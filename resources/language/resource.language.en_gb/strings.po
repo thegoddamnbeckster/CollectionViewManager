@@ -10,53 +10,33 @@ msgid "Collection View Manager"
 msgstr "Collection View Manager"
 
 msgctxt "#32010"
-msgid "Set as default collection view"
-msgstr "Set as default collection view"
-
-msgctxt "#32011"
-msgid "Captured the view from '{0}' — click 'Apply to all collections' in settings to use it everywhere"
-msgstr "Captured the view from '{0}' — click 'Apply to all collections' in settings to use it everywhere"
+msgid "Set collection view..."
+msgstr "Set collection view..."
 
 msgctxt "#32013"
 msgid "Applied '{0}' view to {1} of {2} movie collections"
 msgstr "Applied '{0}' view to {1} of {2} movie collections"
 
-msgctxt "#32014"
-msgid "Nothing captured yet — right-click a collection's tile and choose 'Set as default collection view' first"
-msgstr "Nothing captured yet — right-click a collection's tile and choose 'Set as default collection view' first"
-
 msgctxt "#32015"
-msgid "Couldn't capture — open this collection once, pick a view via Options > View, then try again"
-msgstr "Couldn't capture — open this collection once, pick a view via Options > View, then try again"
+msgid "Could not identify this collection"
+msgstr "Could not identify this collection"
 
 msgctxt "#32016"
-msgid "Apply failed — could not access Kodi's view database"
-msgstr "Apply failed — could not access Kodi's view database"
-
-msgctxt "#32017"
-msgid "Captured view was for a different skin than the one active now — recapture it"
-msgstr "Captured view was for a different skin than the one active now — recapture it"
+msgid "Failed to set the view — could not access Kodi's view database"
+msgstr "Failed to set the view — could not access Kodi's view database"
 
 msgctxt "#32018"
 msgid "No movie collections found in your library"
 msgstr "No movie collections found in your library"
 
-msgctxt "#32020"
-msgid "Captured from collection"
-msgstr "Captured from collection"
-
-msgctxt "#32021"
-msgid "Collection path"
-msgstr "Collection path"
-
-msgctxt "#32022"
-msgid "Apply to all movie collections now"
-msgstr "Apply to all movie collections now"
+msgctxt "#32019"
+msgid "Could not detect the available views for this skin"
+msgstr "Could not detect the available views for this skin"
 
 msgctxt "#32023"
-msgid "How to set the default: open one collection, pick a view via Options > View, then right-click that same collection's tile (from the Movies list) and choose 'Set as default collection view'. Come back here and click Apply."
-msgstr "How to set the default: open one collection, pick a view via Options > View, then right-click that same collection's tile (from the Movies list) and choose 'Set as default collection view'. Come back here and click Apply."
+msgid "Right-click any movie collection and choose 'Set collection view...' to pick a view and apply it to every collection in your library at once."
+msgstr "Right-click any movie collection and choose 'Set collection view...' to pick a view and apply it to every collection in your library at once."
 
-msgctxt "#32024"
-msgid "Captured the view from '{0}'. Apply it to every movie collection now?"
-msgstr "Captured the view from '{0}'. Apply it to every movie collection now?"
+msgctxt "#32025"
+msgid "Choose a view for all collections"
+msgstr "Choose a view for all collections"

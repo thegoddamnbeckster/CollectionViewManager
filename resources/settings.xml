@@ -2,15 +2,5 @@
 <settings>
     <category label="32000">
         <setting id="how_to_info" type="lsep" label="32023"/>
-        <setting id="captured_view_name" type="text" label="32020" default="" enable="false"/>
-        <setting id="captured_source_path" type="text" label="32021" default="" enable="false"/>
-        <setting id="apply_now" type="action" label="32022" action="RunScript(script.collectionview,action=apply)"/>
-
-        <!-- Hidden storage for the captured Kodi view state -->
-        <setting id="captured_view_mode" type="text" default="" visible="false"/>
-        <setting id="captured_sort_method" type="text" default="" visible="false"/>
-        <setting id="captured_sort_order" type="text" default="" visible="false"/>
-        <setting id="captured_sort_attributes" type="text" default="" visible="false"/>
-        <setting id="captured_skin" type="text" default="" visible="false"/>
     </category>
 </settings>
